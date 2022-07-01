@@ -5,6 +5,7 @@ export const resolvers = {
     // _root convention for unused variables
     job: (_root, { id }) => Job.findById(id),
     jobs: () => Job.findAll(),
+    company: (_root, { id }) => Company.findById(id),
   },
 
   Job: {
