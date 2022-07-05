@@ -2,6 +2,23 @@ import { request, gql } from "graphql-request";
 
 const GRAPHQL_URL = "http://localhost:9000/graphql";
 
+export async function createJob(input) {
+  const query = gql`
+    mutation CreateJobMutation($input: CreateJobInput!) {
+      # job is an alias
+      job: createJob(input: $input) {
+        # since we're only using the job ID from the response, we could actually remove
+        # all these other fields. This way we reduce the size of the response a little bit.
+        id
+      }
+    }
+  `;
+
+  const variables = { input };
+  const { job } = await request(GRAPHQL_URL, query, variables);
+  return job;
+}
+
 export async function getCompany(id) {
   const query = gql`
     query CompanyQuery($id: ID!) {
