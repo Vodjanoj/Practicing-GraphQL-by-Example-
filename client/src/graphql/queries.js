@@ -104,6 +104,11 @@ export async function getJobs() {
         title
         description
         company {
+          # For each company, in addition to the name we also want to request its ID, even if we
+          # don't display it on the page. It's a good rule to follow when using Apollo Client
+          # always request the ID field for any object.
+          # (caching)
+          id 
           name
         }
       }
