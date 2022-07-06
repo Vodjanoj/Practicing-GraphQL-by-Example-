@@ -1,5 +1,5 @@
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
-import { request } from "graphql-request";
+
 import { getAccessToken } from "../auth";
 
 const GRAPHQL_URL = "http://localhost:9000/graphql";
@@ -10,7 +10,7 @@ const client = new ApolloClient({
 });
 
 export async function createJob(input) {
-  const query = gql`
+  const mutation = gql`
     mutation CreateJobMutation($input: CreateJobInput!) {
       # job is an alias
       job: createJob(input: $input) {
@@ -22,10 +22,32 @@ export async function createJob(input) {
   `;
 
   const variables = { input };
-  const headers = { Authorization: "Bearer " + getAccessToken() };
-  const { job } = await request(GRAPHQL_URL, query, variables, headers);
+
+  const context = { headers: { Authorization: "Bearer " + getAccessToken() } };
+  const {
+    data: { job },
+  } = await client.mutate({ mutation, variables, context });
+
   return job;
 }
+
+// export async function createJob(input) {
+//   const query = gql`
+//     mutation CreateJobMutation($input: CreateJobInput!) {
+//       # job is an alias
+//       job: createJob(input: $input) {
+//         # since we're only using the job ID from the response, we could actually remove
+//         # all these other fields. This way we reduce the size of the response a little bit.
+//         id
+//       }
+//     }
+//   `;
+
+//   const variables = { input };
+//   const headers = { Authorization: "Bearer " + getAccessToken() };
+//   const { job } = await request(GRAPHQL_URL, query, variables, headers);
+//   return job;
+// }
 
 export async function getCompany(id) {
   const query = gql`
