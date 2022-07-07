@@ -21,7 +21,7 @@ const JOB_DETAIL_FRAGMENT = gql`
   }
 `;
 
-const JOB_QUERY = gql`
+export const JOB_QUERY = gql`
   query JobQuery($id: ID!) {
     job(id: $id) {
       ...JobDetail
@@ -130,15 +130,15 @@ export async function getCompany(id) {
   return company;
 }
 
-export async function getJob(id) {
-  const variables = { id };
-  const {
-    data: { job },
-  } = await client.query({ query: JOB_QUERY, variables });
+// export async function getJob(id) {
+//   const variables = { id };
+//   const {
+//     data: { job },
+//   } = await client.query({ query: JOB_QUERY, variables });
 
-  // const { job } = await request(GRAPHQL_URL, query, variables);
-  return job;
-}
+//   // const { job } = await request(GRAPHQL_URL, query, variables);
+//   return job;
+// }
 
 // export async function getJobs() {
 //   const query = gql`
