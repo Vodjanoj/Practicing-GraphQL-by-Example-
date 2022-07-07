@@ -4,7 +4,7 @@ import { getAccessToken } from "../auth";
 
 const GRAPHQL_URL = "http://localhost:9000/graphql";
 
-const client = new ApolloClient({
+export const client = new ApolloClient({
   uri: GRAPHQL_URL,
   cache: new InMemoryCache(),
 });
@@ -28,6 +28,24 @@ const JOB_QUERY = gql`
     }
   }
   ${JOB_DETAIL_FRAGMENT}
+`;
+ 
+export const JOBS_QUERY = gql`
+  query JobsQuery {
+    jobs {
+      id
+      title
+      description
+      company {
+        # For each company, in addition to the name we also want to request its ID, even if we
+        # don't display it on the page. It's a good rule to follow when using Apollo Client
+        # always request the ID field for any object.
+        # (caching)
+        id
+        name
+      }
+    }
+  }
 `;
 
 export async function createJob(input) {
@@ -122,29 +140,29 @@ export async function getJob(id) {
   return job;
 }
 
-export async function getJobs() {
-  const query = gql`
-    query JobsQuery {
-      jobs {
-        id
-        title
-        description
-        company {
-          # For each company, in addition to the name we also want to request its ID, even if we
-          # don't display it on the page. It's a good rule to follow when using Apollo Client
-          # always request the ID field for any object.
-          # (caching)
-          id
-          name
-        }
-      }
-    }
-  `;
+// export async function getJobs() {
+//   const query = gql`
+//     query JobsQuery {
+//       jobs {
+//         id
+//         title
+//         description
+//         company {
+//           # For each company, in addition to the name we also want to request its ID, even if we
+//           # don't display it on the page. It's a good rule to follow when using Apollo Client
+//           # always request the ID field for any object.
+//           # (caching)
+//           id
+//           name
+//         }
+//       }
+//     }
+//   `;
 
-  const {
-    data: { jobs },
-  } = await client.query({ query });
+//   const {
+//     data: { jobs },
+//   } = await client.query({ query });
 
-  // const { jobs } = await request(GRAPHQL_URL, query);
-  return jobs;
-}
+//   // const { jobs } = await request(GRAPHQL_URL, query);
+//   return jobs;
+// }
