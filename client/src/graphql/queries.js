@@ -9,18 +9,25 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const JOB_DETAIL_FRAGMENT = gql`
+  fragment JobDetail on Job {
+    id
+    title
+    company {
+      id
+      name
+    }
+    description
+  }
+`;
+
 const JOB_QUERY = gql`
   query JobQuery($id: ID!) {
     job(id: $id) {
-      id
-      title
-      company {
-        id
-        name
-      }
-      description
+      ...JobDetail
     }
   }
+  ${JOB_DETAIL_FRAGMENT}
 `;
 
 export async function createJob(input) {
@@ -30,15 +37,10 @@ export async function createJob(input) {
       job: createJob(input: $input) {
         # we need also all these data to store in the cache and then use the data
         # to display in the component
-        id
-        title
-        company {
-          id
-          name
-        }
-        description
+        ...JobDetail
       }
     }
+    ${JOB_DETAIL_FRAGMENT}
   `;
 
   const variables = { input };
@@ -105,7 +107,7 @@ export async function getCompany(id) {
   const variables = { id };
   const {
     data: { company },
-  } = await client.query({ query , variables });
+  } = await client.query({ query, variables });
   // const { company } = await request(GRAPHQL_URL, query, variables);
   return company;
 }
