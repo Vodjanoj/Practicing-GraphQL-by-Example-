@@ -108,7 +108,7 @@ export async function getJobs() {
           # don't display it on the page. It's a good rule to follow when using Apollo Client
           # always request the ID field for any object.
           # (caching)
-          id 
+          id
           name
         }
       }
