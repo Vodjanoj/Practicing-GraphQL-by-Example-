@@ -1,6 +1,5 @@
 import { ApolloClient, gql, InMemoryCache } from "@apollo/client";
 
-import { getAccessToken } from "../auth";
 
 const GRAPHQL_URL = "http://localhost:9000/graphql";
 
@@ -48,22 +47,34 @@ export const JOBS_QUERY = gql`
   }
 `;
 
-export async function createJob(input) {
-  const mutation = gql`
-    mutation CreateJobMutation($input: CreateJobInput!) {
-      # job is an alias
-      job: createJob(input: $input) {
-        # we need also all these data to store in the cache and then use the data
-        # to display in the component
-        ...JobDetail
-      }
+export const CREATE_JOB_MUTATION = gql`
+  mutation CreateJobMutation($input: CreateJobInput!) {
+    # job is an alias
+    job: createJob(input: $input) {
+      # we need also all these data to store in the cache and then use the data
+      # to display in the component
+      ...JobDetail
     }
-    ${JOB_DETAIL_FRAGMENT}
-  `;
+  }
+  ${JOB_DETAIL_FRAGMENT}
+`;
 
-  const variables = { input };
+// export async function createJob(input) {
+//   const mutation = gql`
+//     mutation CreateJobMutation($input: CreateJobInput!) {
+//       # job is an alias
+//       job: createJob(input: $input) {
+//         # we need also all these data to store in the cache and then use the data
+//         # to display in the component
+//         ...JobDetail
+//       }
+//     }
+//     ${JOB_DETAIL_FRAGMENT}
+//   `;
 
-  const context = { headers: { Authorization: "Bearer " + getAccessToken() } };
+//   const variables = { input };
+
+//   const context = { headers: { Authorization: "Bearer " + getAccessToken() } };
   // update updates data in the cache
   // "result" is the same object we get when we call "client.mutate", so it contains the
   // data in the GraphQL response, therefore we can destructure that "result" object here in the same way.
@@ -71,23 +82,23 @@ export async function createJob(input) {
   // update - so this is how we can write some data directly into the cache.
   // We are effectively storing the same data that is normally fetched by the "job" query, but in this
   // case we're doing it manually, after a "createJob" mutation.
-  const {
-    data: { job },
-  } = await client.mutate({
-    mutation,
-    variables,
-    context,
-    update: (cache, { data: { job } }) => {
-      cache.writeQuery({
-        query: JOB_QUERY,
-        variables: { id: job.id },
-        data: { job },
-      });
-    },
-  });
+//   const {
+//     data: { job },
+//   } = await client.mutate({
+//     mutation,
+//     variables,
+//     context,
+//     update: (cache, { data: { job } }) => {
+//       cache.writeQuery({
+//         query: JOB_QUERY,
+//         variables: { id: job.id },
+//         data: { job },
+//       });
+//     },
+//   });
 
-  return job;
-}
+//   return job;
+// }
 
 // export async function createJob(input) {
 //   const query = gql`
