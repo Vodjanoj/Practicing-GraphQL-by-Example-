@@ -6,6 +6,10 @@ function rejectIf(condition) {
   }
 }
 
+// function delay(ms) {
+//   return new Promise((resolve) => setTimeout(resolve, ms));
+// }
+
 export const resolvers = {
   Query: {
     // _root convention for unused variables
@@ -15,8 +19,10 @@ export const resolvers = {
   },
 
   Mutation: {
-    createJob: (_root, { input }, { user }) => {
+    createJob: async (_root, { input }, { user }) => {
       rejectIf(!user);
+      // delay to see when a button is disabled
+      // await delay(2000);
       return Job.create({ ...input, companyId: user.companyId });
     },
 

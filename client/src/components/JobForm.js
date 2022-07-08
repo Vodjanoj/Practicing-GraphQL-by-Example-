@@ -21,7 +21,7 @@ function JobForm() {
   // not actually send a request to the server.  It simply prepares the mutation, that we'll execute later.
   // That's why we may not even need this "result" object.
 
-  const [mutate] = useMutation(CREATE_JOB_MUTATION);
+  const [mutate, { loading }] = useMutation(CREATE_JOB_MUTATION);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -76,7 +76,7 @@ function JobForm() {
           </div>
           <div className="field">
             <div className="control">
-              <button className="button is-link" onClick={handleSubmit}>
+              <button className="button is-link" disabled={loading} onClick={handleSubmit}>
                 Submit
               </button>
             </div>
